@@ -1,0 +1,215 @@
+{
+  "actions": [
+    {
+      "command": "lihat",
+      "timestamp": "2025-07-29T10:56:44.051321",
+      "location": "hutan",
+      "inventory": [],
+      "success": true,
+      "response_type": "success",
+      "response_length": 1354,
+      "context": {
+        "health": 100,
+        "level": 1,
+        "gold": 50,
+        "available_locations": [
+          "gua",
+          "kota",
+          "sungai"
+        ],
+        "active_quests": []
+      }
+    },
+    {
+      "command": "aku ingin membuat nama pahlawan",
+      "timestamp": "2025-07-29T10:56:56.046982",
+      "location": "hutan",
+      "inventory": [],
+      "success": true,
+      "response_type": "ai_response",
+      "response_length": 269,
+      "context": {
+        "health": 100,
+        "level": 1,
+        "gold": 50,
+        "available_locations": [
+          "gua",
+          "kota",
+          "sungai"
+        ],
+        "active_quests": []
+      }
+    },
+    {
+      "command": "lihat",
+      "timestamp": "2025-07-29T10:57:32.108029",
+      "location": "hutan",
+      "inventory": [],
+      "success": true,
+      "response_type": "success",
+      "response_length": 1248,
+      "context": {
+        "health": 100,
+        "level": 1,
+        "gold": 50,
+        "available_locations": [
+          "gua",
+          "kota",
+          "sungai"
+        ],
+        "active_quests": []
+      }
+    },
+    {
+      "command": "help",
+      "timestamp": "2025-07-29T10:57:37.767286",
+      "location": "hutan",
+      "inventory": [],
+      "success": true,
+      "response_type": "success",
+      "response_length": 801,
+      "context": {
+        "health": 100,
+        "level": 1,
+        "gold": 50,
+        "available_locations": [
+          "gua",
+          "kota",
+          "sungai"
+        ],
+        "active_quests": []
+      }
+    },
+    {
+      "command": "help",
+      "timestamp": "2025-07-29T10:57:39.135834",
+      "location": "hutan",
+      "inventory": [],
+      "success": true,
+      "response_type": "success",
+      "response_length": 801,
+      "context": {
+        "health": 100,
+        "level": 1,
+        "gold": 50,
+        "available_locations": [
+          "gua",
+          "kota",
+          "sungai"
+        ],
+        "active_quests": []
+      }
+    },
+    {
+      "command": "help",
+      "timestamp": "2025-07-29T10:57:39.496675",
+      "location": "hutan",
+      "inventory": [],
+      "success": true,
+      "response_type": "success",
+      "response_length": 801,
+      "context": {
+        "health": 100,
+        "level": 1,
+        "gold": 50,
+        "available_locations": [
+          "gua",
+          "kota",
+          "sungai"
+        ],
+        "active_quests": []
+      }
+    },
+    {
+      "command": "help",
+      "timestamp": "2025-07-29T10:57:39.689401",
+      "location": "hutan",
+      "inventory": [],
+      "success": true,
+      "response_type": "success",
+      "response_length": 801,
+      "context": {
+        "health": 100,
+        "level": 1,
+        "gold": 50,
+        "available_locations": [
+          "gua",
+          "kota",
+          "sungai"
+        ],
+        "active_quests": []
+      }
+    },
+    {
+      "command": "help",
+      "timestamp": "2025-07-29T10:57:39.848416",
+      "location": "hutan",
+      "inventory": [],
+      "success": true,
+      "response_type": "success",
+      "response_length": 801,
+      "context": {
+        "health": 100,
+        "level": 1,
+        "gold": 50,
+        "available_locations": [
+          "gua",
+          "kota",
+          "sungai"
+        ],
+        "active_quests": []
+      }
+    },
+    {
+      "command": "help",
+      "timestamp": "2025-07-29T10:57:40.027055",
+      "location": "hutan",
+      "inventory": [],
+      "success": true,
+      "response_type": "success",
+      "response_length": 801,
+      "context": {
+        "health": 100,
+        "level": 1,
+        "gold": 50,
+        "available_locations": [
+          "gua",
+          "kota",
+          "sungai"
+        ],
+        "active_quests": []
+      }
+    },
+    {
+      "command": "help",
+      "timestamp": "2025-07-29T10:57:40.194107",
+      "location": "hutan",
+      "inventory": [],
+      "success": true,
+      "response_type": "success",
+      "response_length": 801,
+      "context": {
+        "health": 100,
+        "level": 1,
+        "gold": 50,
+        "available_locations": [
+          "gua",
+          "kota",
+          "sungai"
+        ],
+        "active_quests": []
+      }
+    }
+  ],
+  "command_frequency": {
+    "lihat": 2,
+    "aku ingin membuat nama pahlawan": 1,
+    "help": 7
+  },
+  "location_popularity": {
+    "hutan": 10
+  },
+  "item_usage": {},
+  "npc_interactions": {},
+  "last_updated": "2025-07-29T10:57:40.194107"
+}

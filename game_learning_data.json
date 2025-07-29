@@ -1,0 +1,95 @@
+{
+  "actions": [
+    {
+      "command": "check inventaris",
+      "timestamp": "2025-07-29T10:35:38.148066",
+      "location": "hutan",
+      "inventory": [],
+      "success": true,
+      "response_type": "ai_response",
+      "response_length": 557,
+      "context": {
+        "health": 100,
+        "level": 1,
+        "gold": 50,
+        "available_locations": [
+          "gua",
+          "kota",
+          "sungai"
+        ],
+        "active_quests": []
+      }
+    },
+    {
+      "command": "pergi ke goa",
+      "timestamp": "2025-07-29T10:36:28.445442",
+      "location": "hutan",
+      "inventory": [],
+      "success": false,
+      "response_type": "error",
+      "response_length": 66,
+      "context": {
+        "health": 100,
+        "level": 1,
+        "gold": 50,
+        "available_locations": [
+          "gua",
+          "kota",
+          "sungai"
+        ],
+        "active_quests": []
+      }
+    },
+    {
+      "command": "pergi ke gua",
+      "timestamp": "2025-07-29T10:36:41.173819",
+      "location": "gua",
+      "inventory": [],
+      "success": true,
+      "response_type": "success",
+      "response_length": 24,
+      "context": {
+        "health": 100,
+        "level": 1,
+        "gold": 50,
+        "available_locations": [
+          "hutan",
+          "dalam_gua"
+        ],
+        "active_quests": []
+      }
+    },
+    {
+      "command": "eksplorasi gua lebih dalam",
+      "timestamp": "2025-07-29T10:37:13.946813",
+      "location": "gua",
+      "inventory": [],
+      "success": true,
+      "response_type": "ai_response",
+      "response_length": 745,
+      "context": {
+        "health": 100,
+        "level": 1,
+        "gold": 50,
+        "available_locations": [
+          "hutan",
+          "dalam_gua"
+        ],
+        "active_quests": []
+      }
+    }
+  ],
+  "command_frequency": {
+    "check inventaris": 1,
+    "pergi ke goa": 1,
+    "pergi ke gua": 1,
+    "eksplorasi gua lebih dalam": 1
+  },
+  "location_popularity": {
+    "hutan": 2,
+    "gua": 2
+  },
+  "item_usage": {},
+  "npc_interactions": {},
+  "last_updated": "2025-07-29T10:50:04.278157"
+}
