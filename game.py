@@ -5,6 +5,7 @@ from rich.table import Table
 from rich.text import Text
 from rich import box
 import time
+import readline
 from game_state import GameState
 from ai_integration import generate_description, generate_puzzle, generate_npc_dialogue, generate_contextual_response, generate_quest_description, generate_location_description
 from ai_learning_system import AILearningSystem
@@ -28,6 +29,117 @@ class Game:
         # Combat state
         self.in_combat = False
         self.current_enemy = None
+        
+        # Command aliases for user-friendliness
+        self.command_aliases = {
+            "i": "inventaris",
+            "s": "status",
+            "l": "lihat",
+            "p": "pergi ke",
+            "a": "ambil",
+            "g": "gunakan",
+            "h": "help",
+            "q": "quest",
+            "m": "merchant"
+        }
+        
+        # Setup command autocomplete
+        self.setup_autocomplete()
+    
+    def setup_autocomplete(self):
+        """Setup command autocomplete functionality"""
+        # List of all available commands for autocomplete
+        commands = [
+            "lihat", "status", "inventaris", "pergi ke", "ambil", "gunakan",
+            "serang", "lari", "serangan", "status pertarungan",
+            "crafting", "buat", "materials", "tools", "skills",
+            "merchant", "beli", "jual", "tawar", "reputation",
+            "simpan", "muat", "daftar save", "hapus save",
+            "bicara dengan", "quest", "mulai quest", "tanya", "pecahkan teka-teki",
+            "ai_learn", "ai_suggest", "help", "keluar", "tutorial"
+        ]
+        
+        # Add aliases to commands list
+        for alias in self.command_aliases.keys():
+            commands.append(alias)
+        
+        def completer(text, state):
+            options = [cmd for cmd in commands if cmd.startswith(text.lower())]
+            if state < len(options):
+                return options[state]
+            else:
+                return None
+        
+        readline.parse_and_bind("tab: complete")
+        readline.set_completer(completer)
+    
+    def show_tutorial(self):
+        """Show interactive tutorial for new players"""
+        tutorial_text = """
+🎮 **Tutorial Game AI Petualangan** 🎮
+
+Selamat datang di tutorial interaktif! Mari belajar cara bermain:
+
+1️⃣ **Melihat Sekitar**: Ketik 'lihat' atau 'l' untuk melihat lokasi saat ini
+2️⃣ **Cek Status**: Ketik 'status' atau 's' untuk melihat status karakter
+3️⃣ **Inventaris**: Ketik 'inventaris' atau 'i' untuk melihat barang yang dimiliki
+4️⃣ **Bergerak**: Ketik 'pergi ke [lokasi]' atau 'p [lokasi]' untuk berpindah
+5️⃣ **Mengambil Item**: Ketik 'ambil [item]' atau 'a [item]' untuk mengambil barang
+
+Tips:
+- Gunakan Tab untuk autocomplete perintah
+- Ketik 'help' atau 'h' kapan saja untuk melihat daftar perintah
+- Perintah singkat tersedia untuk aksi umum (i, s, l, p, a, g, h, q, m)
+
+Apakah Anda ingin mencoba tutorial interaktif? (ya/tidak)
+        """
+        
+        self.console.print(Panel.fit(tutorial_text, style="bold green", title="[bold yellow]Tutorial[/bold yellow]"))
+        choice = Prompt.ask("Pilihan Anda", choices=["ya", "tidak"], default="ya")
+        
+        if choice.lower() == "ya":
+            self.interactive_tutorial()
+        else:
+            self.console.print("[yellow]Anda dapat mengetik 'tutorial' kapan saja untuk memulai tutorial.[/yellow]")
+    
+    def interactive_tutorial(self):
+        """Run interactive tutorial with guided steps"""
+        self.console.print("\n[bold green]Mari mulai tutorial interaktif![/bold green]")
+        
+        # Step 1: Look around
+        self.console.print("\n[bold]Langkah 1:[/bold] Ketik 'lihat' atau 'l' untuk melihat lokasi saat ini")
+        while True:
+            cmd = Prompt.ask(">").strip().lower()
+            if cmd in ["lihat", "l"]:
+                self.handle_command(cmd)
+                break
+            else:
+                self.console.print("[yellow]Coba ketik 'lihat' atau 'l'[/yellow]")
+        
+        # Step 2: Check status
+        self.console.print("\n[bold]Langkah 2:[/bold] Ketik 'status' atau 's' untuk melihat status karakter")
+        while True:
+            cmd = Prompt.ask(">").strip().lower()
+            if cmd in ["status", "s"]:
+                self.handle_command(cmd)
+                break
+            else:
+                self.console.print("[yellow]Coba ketik 'status' atau 's'[/yellow]")
+        
+        # Step 3: Check inventory
+        self.console.print("\n[bold]Langkah 3:[/bold] Ketik 'inventaris' atau 'i' untuk melihat inventaris")
+        while True:
+            cmd = Prompt.ask(">").strip().lower()
+            if cmd in ["inventaris", "i"]:
+                self.handle_command(cmd)
+                break
+            else:
+                self.console.print("[yellow]Coba ketik 'inventaris' atau 'i'[/yellow]")
+        
+        # Tutorial complete
+        self.console.print("\n[bold green]Selamat! Anda telah menyelesaikan tutorial dasar![/bold green]")
+        self.console.print("[green]Anda dapat mengetik 'help' atau 'h' kapan saja untuk melihat daftar perintah lengkap.[/green]")
+        self.console.print("[green]Selamat berpetualang![/green]\n")
     
     def start_game(self):
         """Start the game"""
@@ -45,11 +157,71 @@ Fitur baru yang tersedia:
 🧠 AI Learning - AI yang terus belajar dari aksi Anda
 
 Ketik 'help' untuk melihat semua perintah yang tersedia!
+Ketik 'tutorial' untuk memulai tutorial interaktif!
         """
         
         self.console.print(Panel.fit(welcome_text, style="bold blue", title="[bold yellow]Selamat Datang[/bold yellow]"))
-        self.show_help()
+        
+        # Ask if player wants to start tutorial
+        start_tutorial = Prompt.ask("Apakah Anda ingin memulai tutorial? (pemain baru disarankan)", choices=["ya", "tidak"], default="ya")
+        if start_tutorial.lower() == "ya":
+            self.show_tutorial()
+        else:
+            self.show_help()
+            
         self.main_game_loop()
+    
+    def show_contextual_help(self, command):
+        """Show contextual help based on current command and game state"""
+        # Dictionary of contextual help tips
+        contextual_tips = {
+            "lihat": {
+                "tips": [
+                    "Perhatikan item dan NPC yang ada di lokasi ini.",
+                    "Anda dapat mengambil item dengan perintah 'ambil [item]' atau 'a [item]'.",
+                    "Untuk berbicara dengan NPC, gunakan 'bicara dengan [npc]'."
+                ],
+                "related_commands": ["ambil", "bicara dengan", "pergi ke"]
+            },
+            "status": {
+                "tips": [
+                    "Health rendah? Gunakan item penyembuhan dengan 'gunakan [item]'.",
+                    "Tingkatkan level dengan menyelesaikan quest dan mengalahkan monster.",
+                    "Gold dapat digunakan untuk membeli item dari merchant."
+                ],
+                "related_commands": ["gunakan", "quest", "merchant"]
+            },
+            "inventaris": {
+                "tips": [
+                    "Item dapat digunakan dengan perintah 'gunakan [item]' atau 'g [item]'.",
+                    "Beberapa item dapat digunakan untuk crafting.",
+                    "Item yang tidak diperlukan dapat dijual ke merchant."
+                ],
+                "related_commands": ["gunakan", "crafting", "jual"]
+            },
+            "pergi ke": {
+                "tips": [
+                    "Pastikan Anda telah mengambil semua item penting sebelum berpindah.",
+                    "Beberapa lokasi mungkin memiliki monster atau teka-teki.",
+                    "Gunakan 'lihat' setelah berpindah untuk melihat lokasi baru."
+                ],
+                "related_commands": ["lihat", "ambil", "serang"]
+            }
+        }
+        
+        # Show contextual help if available
+        if command in contextual_tips:
+            tips = contextual_tips[command]["tips"]
+            related = contextual_tips[command]["related_commands"]
+            
+            # Randomly select one tip to show (to avoid overwhelming the player)
+            import random
+            tip = random.choice(tips)
+            
+            # Only show tips occasionally (30% chance)
+            if random.random() < 0.3:
+                self.console.print(f"\n[dim italic]💡 Tip: {tip}[/dim italic]")
+                self.console.print(f"[dim italic]Perintah terkait: {', '.join(related)}[/dim italic]")
     
     def show_help(self):
         """Show comprehensive help"""
@@ -100,8 +272,20 @@ Ketik 'help' untuk melihat semua perintah yang tersedia!
 - `ai_suggest` - Saran dari AI
 
 **📋 LAINNYA:**
-- `help` - Tampilkan bantuan ini
+- `help` atau `h` - Tampilkan bantuan ini
+- `tutorial` - Mulai tutorial interaktif
 - `keluar` - Keluar dari game
+
+**⚡ ALIAS PERINTAH:**
+- `i` - Alias untuk inventaris
+- `s` - Alias untuk status
+- `l` - Alias untuk lihat
+- `p` - Alias untuk pergi ke
+- `a` - Alias untuk ambil
+- `g` - Alias untuk gunakan
+- `h` - Alias untuk help
+- `q` - Alias untuk quest
+- `m` - Alias untuk merchant
         """
         
         self.console.print(Panel.fit(help_text, style="bold green", title="[bold yellow]Bantuan Lengkap[/bold yellow]"))
@@ -114,26 +298,54 @@ Ketik 'help' untuk melihat semua perintah yang tersedia!
             return
         
         try:
-            self.state.add_action(command)
+            # Process command aliases
             cmd = command.lower()
+            
+            # Check if command is an alias and replace with full command
+            if cmd in self.command_aliases:
+                full_command = self.command_aliases[cmd]
+                # If the alias is a prefix (like 'p' for 'pergi ke'), preserve the rest of the command
+                if len(command) > len(cmd) and command[len(cmd)] == ' ':
+                    command = full_command + command[len(cmd):]
+                else:
+                    command = full_command
+                cmd = command.lower()
+                self.console.print(f"[dim](Menggunakan alias: {full_command})[/dim]")
+            
+            self.state.add_action(command)
             success = True
             response_type = "success"
             response_text = ""
             
+            # Tutorial command
+            if cmd == "tutorial":
+                self.show_tutorial()
+                return
+            
             # Basic commands
-            if cmd == "keluar":
+            elif cmd == "keluar":
                 self.state.game_over = True
                 response_text = "Anda meninggalkan petualangan. Sampai jumpa!"
                 self.console.print(Panel.fit(response_text, style="bold red", title="[bold yellow]Keluar[/bold yellow]"))
             
+            elif cmd == "help" or cmd == "h":
+                self.show_help()
+                return
+            
             elif cmd == "lihat":
                 response_text = self.describe_current_location()
+                # Tambahkan bantuan kontekstual
+                self.show_contextual_help("lihat")
             
             elif cmd == "status":
                 response_text = self.show_status()
+                # Tambahkan bantuan kontekstual
+                self.show_contextual_help("status")
             
             elif cmd == "inventaris":
                 response_text = self.show_inventory()
+                # Tambahkan bantuan kontekstual
+                self.show_contextual_help("inventaris")
             
             elif cmd.startswith("pergi ke"):
                 response_text = self.handle_movement(command)
@@ -264,9 +476,42 @@ Ketik 'help' untuk melihat semua perintah yang tersedia!
         
         except Exception as e:
             error_msg = f"Error saat memproses perintah: {e}"
-            self.console.print(f"[red]{error_msg}[/red]")
+            friendly_message = error_msg
+            
+            # Pesan error yang lebih jelas dan informatif
+            friendly_errors = {
+                "index out of range": "Perintah tidak lengkap. Gunakan format yang benar, misalnya 'pergi ke [lokasi]'.",
+                "not found": "Item atau lokasi tidak ditemukan. Periksa penulisan atau gunakan 'lihat' untuk melihat apa yang tersedia.",
+                "not enough": "Anda tidak memiliki cukup sumber daya untuk melakukan tindakan ini.",
+                "already": "Anda sudah melakukan tindakan ini sebelumnya.",
+                "cannot": "Anda tidak dapat melakukan tindakan ini sekarang.",
+                "invalid": "Perintah tidak valid. Gunakan 'help' untuk melihat daftar perintah yang tersedia."
+            }
+            
+            # Cek apakah error cocok dengan salah satu pesan yang lebih ramah
+            for key, message in friendly_errors.items():
+                if key in str(e).lower():
+                    friendly_message = message
+                    break
+            
+            # Tampilkan pesan error yang lebih ramah
+            self.console.print(f"[red]{friendly_message}[/red]")
             self.console.print("[yellow]Coba ketik 'help' untuk melihat perintah yang tersedia.[/yellow]")
-            self.record_action_for_learning(command, False, "error", error_msg)
+            
+            # Tambahkan saran perintah yang mungkin dimaksud jika perintah tidak valid
+            if "invalid" in str(e).lower() and len(command.split()) > 0:
+                cmd_word = command.split()[0].lower()
+                all_commands = list(self.command_aliases.values()) + ["lihat", "status", "inventaris", "pergi ke", "ambil", "gunakan", "help", "tutorial"]
+                
+                # Cari perintah yang mirip
+                import difflib
+                similar_commands = difflib.get_close_matches(cmd_word, all_commands, n=3, cutoff=0.6)
+                
+                if similar_commands:
+                    suggestion = "Mungkin maksud Anda: " + ", ".join(f"'{cmd}'" for cmd in similar_commands)
+                    self.console.print(f"[yellow]{suggestion}[/yellow]")
+            
+            self.record_action_for_learning(command, False, "error", friendly_message)
     
     def describe_current_location(self):
         """Describe current location with enhanced features"""
